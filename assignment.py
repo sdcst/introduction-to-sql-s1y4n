@@ -22,12 +22,68 @@ retrieve a record by phone number and display all of the information
 You will need to create the table yourself. Consider what data types you will
 need to use.
 """
+def add():
+    data = []
+    choice = None
+    while choice != "X":
+        info = []
+        for x in title:
+            info.append(input(f"Please Enter {x}: "))
+        data.append(info)
+        print(data) #debug
+        choice = input("Your data has been saved, would you like to enter more?\n tyle anything to continue, [X] to exit: ").strip().upper()
+    else:
+        for i in data:
+            query = f"insert into petbase(petname, petspecies, petbreed, ownername, ownernum, owneremail, ownerbalance, date) values ('{i[0]}','{i[1]}','{i[2]}', '{i[3]}', '{i[4]}', '{i[5]}', '{i[6]}', '{i[7]}');"
+        cursor.execute(query)
+        connection.commit()
+
+def search():
+    
+    query = "select * from petbase"
+    cursor.execute(query)
+    all = cursor.fetchall()
+    
+    if len(all) == 0:
+        print("no data to display")
+    else:
+        choice = None
+        result = []
+        while choice not in ["I","E","P","X"]:
+            choice = input("how would you like to retrieve?\n by id [I]\n by owner email [E]\n by owner phone number [P]\n enter [X] to exit\nwhat would you like to do? [I/E/P]").strip().upper()
+        if choice == "I":
+            query = "select id from petbase"
+        elif choice == "E":
+            query = "select owneremail from petbase"
+        elif choice == "P":
+            query = "select ownernum from petbase"
+        elif choice == "X":
+            exit()
+        cursor.execute(query)
+        data = cursor.fetchall()
+        search = input("type your search: ")
+        try:
+            for i in data:
+                if search in str(i):
+                    result.append(all[data.index(i)])
+            if len(result) != 0:
+                for i in result:
+                    for x in range(8):
+                        print(f"{title[x]}: {i[x+1]}")
+                    print("----------")
+            else:
+                print("no match found")
+        except Exception as e:
+            print(f"An error occurred {e}")
+            
+
 import sqlite3
 
+#basic
+title = ["pet name", "pet species","pet breed","owner name","owner phone number", "owner email", "owner balance", "date of first visit"]
 file = 'pbase.db'
 connection = sqlite3.connect(file)
 cursor = connection.cursor()
-
 query = """
 create table if not exists petbase(
     id integer primary key autoincrement,
@@ -41,45 +97,18 @@ create table if not exists petbase(
     date tinytext);
 """
 cursor.execute(query)
-title = ["pet name", "pet species","pet breed","owner name","owner phone number", "owner email", "owner balance", "date of first visit"]
 
-def add():
-    data = []
-    choice = None
-    while choice != "N":
-        info = []
-        for x in title:
-            info.append(input(f"Please Enter {x}: "))
-        data.append(info)
-        print(data) #debug
-        choice = input("Your data has been saved, would you like to enter more? [Y/N]").strip().upper()
-    else:
-        for i in data:
-            query = f"insert into petbase(petname, petspecies, petbreed, ownername, ownernum, owneremail, ownerbalance, date) values ('{i[0]}','{i[1]}','{i[2]}', '{i[3]}', '{i[4]}', '{i[5]}', '{i[6]}', '{i[7]}');"
-        cursor.execute(query)
-        connection.commit()
-
-def display():
-    choice = input("how would you like to retrieve?\n by id\n by owner email\n by owner phone number[I/E/P]")
-    query2 = """""" 
-    if choice == "I":
-        query = """select id from petbase"""
-    elif choice == "E":
-        query = """select owneremail from petbase"""
-    elif choice == "P":
-        query = """select ownernum from petbase"""
-    cursor.execute(query)
-    data = cursor.fetchall()
-    search = input("type your search: ")
-    for i in data:
-        if search in i:
-            data.index(i)
-    
 #menu
-mouse = None
-while mouse != "N":
-    mouse = input("enter: ")
-    if mouse == "A":
-        add()
-    elif mouse == "D":
-        display()
+loop = True
+while loop:
+    mouse = None
+    print("Veterinary Database")
+    print("Add new record [A]\nSearch existing record [S]\nExit [X]")
+    while mouse not in ["A","S","X"]:
+        mouse = input("what would you like to do? ").strip().upper()
+        if mouse == "A":
+            add()
+        elif mouse == "S": 
+            search()
+        elif mouse == "X": 
+            break

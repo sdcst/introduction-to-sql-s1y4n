@@ -35,8 +35,8 @@ def add():
     else:
         for i in data:
             query = f"insert into petbase(petname, petspecies, petbreed, ownername, ownernum, owneremail, ownerbalance, date) values ('{i[0]}','{i[1]}','{i[2]}', '{i[3]}', '{i[4]}', '{i[5]}', '{i[6]}', '{i[7]}');"
-        cursor.execute(query)
-        connection.commit()
+            cursor.execute(query)
+            connection.commit()
 
 def search():
     
@@ -68,11 +68,13 @@ def search():
                     result.append(all[data.index(i)])
             if len(result) != 0:
                 for i in result:
+                    print("----------")
                     for x in range(8):
                         print(f"{title[x]}: {i[x+1]}")
                     print("----------")
             else:
                 print("no match found")
+                print("----------")
         except Exception as e:
             print(f"An error occurred {e}")
             
@@ -102,8 +104,11 @@ cursor.execute(query)
 loop = True
 while loop:
     mouse = None
+    print("----------")
     print("Veterinary Database")
+    print("----------")
     print("Add new record [A]\nSearch existing record [S]\nExit [X]")
+    print("----------")
     while mouse not in ["A","S","X"]:
         mouse = input("what would you like to do? ").strip().upper()
         if mouse == "A":

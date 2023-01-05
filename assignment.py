@@ -30,8 +30,11 @@ def add():
         for x in title:
             info.append(input(f"Please Enter {x}: "))
         data.append(info)
-        print(data) #debug
-        choice = input("Your data has been saved, would you like to enter more?\n tyle anything to continue, [X] to exit: ").strip().upper()
+        for i in data:
+            print("------")
+            for key, value in dict(zip(title, i)).items():
+                print(key,":",value)
+        choice = input("Would you like to enter more?\ntype anything to continue, [X] to exit: ").strip().upper()
     else:
         for i in data:
             query = f"insert into petbase(petname, petspecies, petbreed, ownername, ownernum, owneremail, ownerbalance, date) values ('{i[0]}','{i[1]}','{i[2]}', '{i[3]}', '{i[4]}', '{i[5]}', '{i[6]}', '{i[7]}');"
@@ -73,6 +76,7 @@ def search():
                         print(f"{title[x]}: {i[x+1]}")
                     print("----------")
             else:
+                print("----------")
                 print("no match found")
                 print("----------")
         except Exception as e:
